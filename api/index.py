@@ -26,16 +26,13 @@ telegram_app.add_handler(CommandHandler("start", start))
 telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
 # Webhook endpoint — Vercel будет слать POST сюда
-@app.post(f"/{TOKEN}")  # путь = /твой_токен (безопасно, Telegram использует токен в URL)
+@app.post(f"/{TOKEN}")
 async def webhook(request: Request):
-    if request.method == "POST":
-        body = await request.json()
-        update = Update.de_json(body, telegram_app.bot)
+    print("Telegram прислал запрос!")  # ← добавь это
+    body = await request.json()
+    print("Body:", body)  # ← и это
+    update = Update.de_json(body, telegram_app.bot)
+    if update:
+        print("Update:", update.to_dict())  # ← и это
         await telegram_app.process_update(update)
-        return Response(status_code=200)
-    return Response(status_code=405)
-
-# Для теста: GET на корень — просто чтобы Vercel видел функцию
-@app.get("/")
-async def root():
-    return {"message": "Telegram bot webhook ready"}
+    return {"ok": True}
