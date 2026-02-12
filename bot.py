@@ -1,5 +1,7 @@
 import os
 
+from dotenv import load_dotenv
+load_dotenv()  # Это загрузит переменные из .env
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
